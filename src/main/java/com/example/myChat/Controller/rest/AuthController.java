@@ -23,13 +23,13 @@ public class AuthController {
 
     @PostMapping("/auth/register")
     public ResponseEntity<String> register(@RequestBody RegisterRequest registerRequest) {
-        userService.createUser(registerRequest);
+        userService.registerUser(registerRequest);
         return ResponseEntity.status(HttpStatus.OK).body("TOKEN");
     }
 
     @PostMapping("/auth/login")
     public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
-        Optional<User> user = userService.getUser(loginRequest);
+        Optional<User> user = userService.authenticateUser(loginRequest);
         return ResponseEntity.status(HttpStatus.OK).body(user + "token: " + "token2121o21o21o291");
     }
 }
