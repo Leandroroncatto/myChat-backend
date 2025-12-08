@@ -1,15 +1,16 @@
 package com.example.myChat.Controller.rest;
 
+import com.example.myChat.Dtos.LoginRequest;
 import com.example.myChat.Dtos.RegisterRequest;
 import com.example.myChat.Model.User;
-import com.example.myChat.Repository.UserRepository;
 import com.example.myChat.Service.UserService;
-import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+
+import java.util.Optional;
 
 @Controller
 public class AuthController {
@@ -21,8 +22,14 @@ public class AuthController {
     }
 
     @PostMapping("/auth/register")
-    public ResponseEntity<String> registerUser(@RequestBody RegisterRequest registerRequest) {
+    public ResponseEntity<String> register(@RequestBody RegisterRequest registerRequest) {
         userService.createUser(registerRequest);
-        return ResponseEntity.status(HttpStatus.OK).body("CRIADO");
+        return ResponseEntity.status(HttpStatus.OK).body("TOKEN");
+    }
+
+    @PostMapping("/auth/login")
+    public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
+        Optional<User> user = userService.getUser(loginRequest);
+        return ResponseEntity.status(HttpStatus.OK).body(user + "token: " + "token2121o21o21o291");
     }
 }
