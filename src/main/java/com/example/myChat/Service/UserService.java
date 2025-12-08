@@ -1,10 +1,15 @@
 package com.example.myChat.Service;
 
+import com.example.myChat.Dtos.LoginRequest;
 import com.example.myChat.Dtos.RegisterRequest;
 import com.example.myChat.Model.User;
 import com.example.myChat.Repository.UserRepository;
+import org.hibernate.annotations.NotFound;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -17,7 +22,13 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public User createUser(RegisterRequest request) {
+        String identifier = request.getEmail() == null ? request.getUsername() : request.getEmail();
+        Optional<User> user = userRepository.findByUsernameOrEmail(identifier, identifier);
+
+        return user;
+    }
+
+    public User registerUser(RegisterRequest request) {
         User user = new User();
         user.setUsername(request.getUsername());
         user.setDisplayName(request.getDisplayName());
