@@ -22,6 +22,7 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    public Optional<User> authenticateUser(LoginRequest request) {
         String identifier = request.getEmail() == null ? request.getUsername() : request.getEmail();
         Optional<User> user = userRepository.findByUsernameOrEmail(identifier, identifier);
 
