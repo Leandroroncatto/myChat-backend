@@ -1,8 +1,9 @@
 package com.example.myChat.Controller.rest;
 
-import com.example.myChat.Dtos.LoginRequest;
-import com.example.myChat.Dtos.RegisterRequest;
+import com.example.myChat.Dtos.request.LoginRequest;
+import com.example.myChat.Dtos.request.RegisterRequest;
 import com.example.myChat.Model.User;
+import com.example.myChat.Service.JwtService;
 import com.example.myChat.Service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,20 +17,29 @@ import java.util.Optional;
 public class AuthController {
 
     private final UserService userService;
+    private final JwtService jwtService;
 
-    public AuthController(UserService userService) {
+    public AuthController(UserService userService, JwtService jwtService) {
         this.userService = userService;
+        this.jwtService = jwtService;
     }
 
     @PostMapping("/auth/register")
     public ResponseEntity<String> register(@RequestBody RegisterRequest registerRequest) {
-        userService.registerUser(registerRequest);
-        return ResponseEntity.status(HttpStatus.OK).body("TOKEN");
+        User user = userService.registerUser(registerRequest)
+                .orElseThrow(() -> new RuntimeException("User registration failed unexpectedly."));
+
+        String token = jwtService.generateToken(user.getUsername());
+        return ResponseEntity.status(HttpStatus.CREATED).body("TOKEN: " + token);
     }
 
     @PostMapping("/auth/login")
     public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
-        Optional<User> user = userService.authenticateUser(loginRequest);
-        return ResponseEntity.status(HttpStatus.OK).body(user + "token: " + "token2121o21o21o291");
+        User user = userService.authenticateUser(loginRequest)
+                .orElseThrow(() -> new RuntimeException("User registration failed unexpectedly."));
+
+        String token = jwtService.generateToken(user.getUsername());
+        return ResponseEntity.status(HttpStatus.OK).body("TOKEN: " + token);
+
     }
 }
