@@ -1,12 +1,13 @@
-package com.example.myChat.Dtos;
+package com.example.myChat.Dtos.request;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class LoginRequest {
+public class RegisterRequest {
     private String username;
+    private String displayName;
     private String email;
     private String password;
 }
