@@ -26,8 +26,7 @@ public class AuthController {
 
     @PostMapping("/auth/register")
     public ResponseEntity<String> register(@RequestBody RegisterRequest registerRequest) {
-        User user = userService.registerUser(registerRequest)
-                .orElseThrow(() -> new RuntimeException("User registration failed unexpectedly."));
+        User user = userService.registerUser(registerRequest);
 
         String token = jwtService.generateToken(user.getUsername());
         return ResponseEntity.status(HttpStatus.CREATED).body("TOKEN: " + token);
@@ -35,11 +34,9 @@ public class AuthController {
 
     @PostMapping("/auth/login")
     public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
-        User user = userService.authenticateUser(loginRequest)
-                .orElseThrow(() -> new RuntimeException("User registration failed unexpectedly."));
+        User user = userService.loginUser(loginRequest);
 
         String token = jwtService.generateToken(user.getUsername());
         return ResponseEntity.status(HttpStatus.OK).body("TOKEN: " + token);
-
     }
 }
