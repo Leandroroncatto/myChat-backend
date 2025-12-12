@@ -6,12 +6,15 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.processing.Pattern;
 import org.jspecify.annotations.Nullable;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -30,7 +33,7 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    private String profilePictureUrl;
+    private String profilePictureUrl = "";
 
     @Column(nullable = false, length = 20, unique = true)
     private String username;
@@ -45,14 +48,14 @@ public class User implements UserDetails {
     private String password;
 
     @Column(length = 150)
-    private String bio;
+    private String bio = "";
 
     @Enumerated(EnumType.STRING)
     private UserStatus status = UserStatus.OFFLINE;
 
-    @CreatedDate
+    @CreationTimestamp
     @Column(updatable = false)
-    private Date created_At;
+    private LocalDateTime createdAt;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
