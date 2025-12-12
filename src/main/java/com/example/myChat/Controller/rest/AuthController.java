@@ -4,37 +4,37 @@ import com.example.myChat.Dtos.request.LoginRequest;
 import com.example.myChat.Dtos.request.RegisterRequest;
 import com.example.myChat.Model.User;
 import com.example.myChat.Service.JwtService;
-import com.example.myChat.Service.UserService;
+import com.example.myChat.Service.AuthService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-
-import java.util.Optional;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
+@RequestMapping("/api/v1/auth")
 public class AuthController {
 
-    private final UserService userService;
+    private final AuthService authService;
     private final JwtService jwtService;
 
-    public AuthController(UserService userService, JwtService jwtService) {
-        this.userService = userService;
+    public AuthController(AuthService authService, JwtService jwtService) {
+        this.authService = authService;
         this.jwtService = jwtService;
     }
 
-    @PostMapping("/auth/register")
+    @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody RegisterRequest registerRequest) {
-        User user = userService.registerUser(registerRequest);
+        User user = authService.registerUser(registerRequest);
 
         String token = jwtService.generateToken(user.getUsername());
         return ResponseEntity.status(HttpStatus.CREATED).body("TOKEN: " + token);
     }
 
-    @PostMapping("/auth/login")
+    @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
-        User user = userService.loginUser(loginRequest);
+        User user = authService.loginUser(loginRequest);
 
         String token = jwtService.generateToken(user.getUsername());
         return ResponseEntity.status(HttpStatus.OK).body("TOKEN: " + token);
