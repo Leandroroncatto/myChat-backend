@@ -24,7 +24,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         final HttpStatus status = HttpStatus.UNAUTHORIZED;
         ErrorResponse errorResponse = new ErrorResponse(
                 status,
-                "You are not authorized to access this."
+                "You are not authorized to access this route."
         );
         Map<String, Object> details = new HashMap<>();
         details.put("code", String.valueOf(status.value()));
