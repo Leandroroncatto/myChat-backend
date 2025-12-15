@@ -7,7 +7,7 @@ import com.example.myChat.Exception.Unauthorized;
 import com.example.myChat.Model.User;
 import com.example.myChat.Repository.UserRepository;
 import com.example.myChat.helpers.LoginFormHelper;
-import com.example.myChat.helpers.RegisterFormHelper;
+import com.example.myChat.helpers.UserFormHelper;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,13 +20,13 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final LoginFormHelper loginFormHelper;
-    private final RegisterFormHelper registerFormHelper;
+    private final UserFormHelper userFormHelper;
 
-    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, LoginFormHelper loginFormHelper, RegisterFormHelper registerFormHelper) {
+    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, LoginFormHelper loginFormHelper, UserFormHelper userFormHelper) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.loginFormHelper = loginFormHelper;
-        this.registerFormHelper = registerFormHelper;
+        this.userFormHelper = userFormHelper;
     }
 
     public User loginUser(LoginRequestDto request) {
@@ -48,7 +48,7 @@ public class AuthService {
     }
 
     public User registerUser(RegisterRequestDto request) {
-        Map<String, String> errors = registerFormHelper.validateRegisterRequest(request);
+        Map<String, String> errors = userFormHelper.validateRegister(request);
 
         if (!errors.isEmpty()) {
             throw new BadRequest("Invalid Fields", errors);
