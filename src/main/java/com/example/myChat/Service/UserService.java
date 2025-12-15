@@ -3,6 +3,8 @@ package com.example.myChat.Service;
 import com.example.myChat.Exception.NotFound;
 import com.example.myChat.Model.User;
 import com.example.myChat.Repository.UserRepository;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -28,5 +30,12 @@ public class UserService {
 
     public User getUser(UUID id) {
         return userRepository.findById(id).orElseThrow(() -> new NotFound("User not found", id));
+    }
+
+    public User getLoggedInUserInfo() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        return userRepository.findByUsername(username).orElseThrow(() -> new NotFound("User not found"));
     }
 }
