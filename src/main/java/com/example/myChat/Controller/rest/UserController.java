@@ -6,14 +6,12 @@ import com.example.myChat.Service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/api/v1/rest/users")
@@ -26,9 +24,10 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<User>> getAllUsers(@RequestParam(value = "search", required = false, defaultValue = "") String search) {
+    public ResponseEntity<List<UserResponseDto>> getAllUsers(@RequestParam(value = "search", required = false, defaultValue = "") String search) {
         List<User> users = userService.getAllUsers(search);
-        return ResponseEntity.ok().body(users);
+        List<UserResponseDto> response = users.stream().map(user -> mountUserResponse(user)).collect(Collectors.toList());
+        return ResponseEntity.ok().body(response);
     }
 
     @GetMapping("/{id}")
@@ -47,15 +46,18 @@ public class UserController {
         return ResponseEntity.ok().body(response);
     }
 
-    /*
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable UUID id) {
+        userService.deleteUser(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    /*
     public ResponseEntity<User> updateUser() {
 
     }
 
-    public void deleteUser() {
-
-    }
 
      */
 
