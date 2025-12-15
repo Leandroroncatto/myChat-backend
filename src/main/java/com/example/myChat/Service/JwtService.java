@@ -14,6 +14,7 @@ import javax.crypto.SecretKey;
 
 import java.nio.charset.StandardCharsets;
 
+import java.time.Instant;
 import java.util.Date;
 
 @Service
@@ -51,5 +52,16 @@ public class JwtService {
             System.out.println("ERRO: TOKEN INVALIDO!!!!!! ERERERERE");
             return false;
         }
+    }
+
+    public Instant extractExpirationInstant(String token) {
+        Claims claims = Jwts.parser()
+                .verifyWith(secretkey)
+                .build().parseSignedClaims(token)
+                .getPayload();
+
+        long expiration = claims.getExpiration().getTime();
+
+        return Instant.ofEpochMilli(expiration);
     }
 }
