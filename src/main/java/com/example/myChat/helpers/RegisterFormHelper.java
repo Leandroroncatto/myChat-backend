@@ -1,6 +1,6 @@
 package com.example.myChat.helpers;
 
-import com.example.myChat.Dtos.request.RegisterRequest;
+import com.example.myChat.Dtos.request.RegisterRequestDto;
 import com.example.myChat.Repository.UserRepository;
 import org.springframework.stereotype.Component;
 
@@ -16,7 +16,7 @@ public class RegisterFormHelper {
         this.userRepository = userRepository;
     }
 
-    public Map<String, String> validateRegisterRequest(RegisterRequest request) {
+    public Map<String, String> validateRegisterRequest(RegisterRequestDto request) {
         Map<String, String> errors = new HashMap<>();
 
         String username = request.getUsername();

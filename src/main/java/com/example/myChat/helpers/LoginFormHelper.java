@@ -1,7 +1,6 @@
 package com.example.myChat.helpers;
 
-import com.example.myChat.Dtos.request.LoginRequest;
-import com.example.myChat.Repository.UserRepository;
+import com.example.myChat.Dtos.request.LoginRequestDto;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -17,7 +16,7 @@ public class LoginFormHelper {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public Map<String, String> validateLoginRequest(LoginRequest request) {
+    public Map<String, String> validateLoginRequest(LoginRequestDto request) {
         Map<String, String> errors = new HashMap<>();
 
         String username = request.getUsername();

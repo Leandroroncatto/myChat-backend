@@ -1,7 +1,7 @@
 package com.example.myChat.Service;
 
-import com.example.myChat.Dtos.request.LoginRequest;
-import com.example.myChat.Dtos.request.RegisterRequest;
+import com.example.myChat.Dtos.request.LoginRequestDto;
+import com.example.myChat.Dtos.request.RegisterRequestDto;
 import com.example.myChat.Exception.BadRequest;
 import com.example.myChat.Exception.Unauthorized;
 import com.example.myChat.Model.User;
@@ -29,7 +29,7 @@ public class AuthService {
         this.registerFormHelper = registerFormHelper;
     }
 
-    public User loginUser(LoginRequest request) {
+    public User loginUser(LoginRequestDto request) {
 
         Map<String, String> formValidationErrors = loginFormHelper.validateLoginRequest(request);
 
@@ -47,7 +47,7 @@ public class AuthService {
         return user;
     }
 
-    public User registerUser(RegisterRequest request) {
+    public User registerUser(RegisterRequestDto request) {
         Map<String, String> errors = registerFormHelper.validateRegisterRequest(request);
 
         if (!errors.isEmpty()) {
@@ -63,7 +63,7 @@ public class AuthService {
         }
     }
 
-    private User buildUser(RegisterRequest request) {
+    private User buildUser(RegisterRequestDto request) {
         User user = new User();
         user.setUsername(request.getUsername());
         user.setDisplayName(request.getDisplayName());
