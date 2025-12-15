@@ -16,6 +16,7 @@ import java.nio.charset.StandardCharsets;
 
 import java.time.Instant;
 import java.util.Date;
+import java.util.UUID;
 
 @Service
 public class JwtService {
@@ -24,24 +25,25 @@ public class JwtService {
     private final String dotEnvKey = dotenv.get("JWT_SECRET");
     private final SecretKey secretkey = Keys.hmacShaKeyFor(dotEnvKey.getBytes(StandardCharsets.UTF_8));
 
-    public String generateToken(String username) {
+    public String generateToken(UUID id) {
         Date createdAt = new Date();
         Date expiration = new Date(System.currentTimeMillis() + 7 * 24 * 60 * 60 * 1000);
 
         return Jwts.builder()
-                .subject(username)
+                .subject(id.toString())
                 .issuedAt(createdAt)
                 .expiration(expiration)
                 .signWith(this.secretkey, Jwts.SIG.HS256)
                 .compact();
     }
 
-    public String extractUsername(String token) {
-        return Jwts.parser()
+    public UUID extractUserId(String token) {
+        String subject = Jwts.parser()
                 .verifyWith(secretkey)
                 .build().parseSignedClaims(token)
                 .getPayload()
                 .getSubject();
+        return UUID.fromString(subject);
     }
 
     public boolean validateToken(String token) {

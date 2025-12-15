@@ -29,7 +29,7 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<AuthResponseDto> register(@RequestBody RegisterRequestDto registerRequest) {
         User user = authService.registerUser(registerRequest);
-        String token = jwtService.generateToken(user.getUsername());
+        String token = jwtService.generateToken(user.getId());
         AuthResponseDto authResponseDto = mountAuthResponseDto(token);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(authResponseDto);
@@ -38,7 +38,7 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<AuthResponseDto> login(@RequestBody LoginRequestDto loginRequest) {
         User user = authService.loginUser(loginRequest);
-        String token = jwtService.generateToken(user.getUsername());
+        String token = jwtService.generateToken(user.getId());
         AuthResponseDto authResponseDto = mountAuthResponseDto(token);
 
         return ResponseEntity.status(HttpStatus.OK).body(authResponseDto);
