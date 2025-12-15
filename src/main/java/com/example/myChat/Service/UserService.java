@@ -1,6 +1,7 @@
 package com.example.myChat.Service;
 
 import com.example.myChat.Exception.NotFound;
+import com.example.myChat.Exception.Unauthorized;
 import com.example.myChat.Model.User;
 import com.example.myChat.Repository.UserRepository;
 import org.springframework.security.core.Authentication;
@@ -37,5 +38,18 @@ public class UserService {
         String username = authentication.getName();
 
         return userRepository.findByUsername(username).orElseThrow(() -> new NotFound("User not found"));
+    }
+
+
+    public void deleteUser(UUID id) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        User user = userRepository.findById(id).orElseThrow(() -> new NotFound("User not found"));
+
+        if (!(user.getUsername().equals(username))) {
+            throw new Unauthorized("You are not authorized to do this");
+        }
+
+        userRepository.delete(user);
     }
 }
