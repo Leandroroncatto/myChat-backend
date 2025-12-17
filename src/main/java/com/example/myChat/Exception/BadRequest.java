@@ -8,7 +8,7 @@ import java.util.Map;
 @Getter
 public class BadRequest extends RuntimeException {
 
-    Map<String, String> fields = new HashMap<>();
+    Map<String, String> fields = null;
 
     public BadRequest(String message) {
         super(message);
