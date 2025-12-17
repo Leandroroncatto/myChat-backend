@@ -14,9 +14,9 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -57,18 +57,17 @@ public class User implements UserDetails {
     @Column(updatable = false)
     private LocalDateTime createdAt;
 
+    @Column
+    private String verificationToken;
+
+    @Column
+    private Instant verificationExpiresIn;
+
+    @Column
+    boolean enabled = false;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of();
-    }
-
-    @Override
-    public String getPassword() {
-        return this.password;
-    }
-
-    @Override
-    public String getUsername() {
-        return this.username;
     }
 }
