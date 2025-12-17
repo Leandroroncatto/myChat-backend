@@ -9,7 +9,7 @@ import java.time.Instant;
 @Getter
 @Setter
 @JsonPropertyOrder({ "token", "expiresAt" })
-public class AuthResponseDto {
+public class LoginResponseDto {
     private String token;
     private Instant expiresAt;
 }

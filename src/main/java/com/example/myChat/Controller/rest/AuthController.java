@@ -3,7 +3,7 @@ package com.example.myChat.Controller.rest;
 import com.example.myChat.Dtos.request.LoginRequestDto;
 import com.example.myChat.Dtos.request.RegisterRequestDto;
 import com.example.myChat.Dtos.response.LoginResponseDto;
-import com.example.myChat.Dtos.response.MessageResponseDto;
+import com.example.myChat.Dtos.response.RegisterResponseDto;
 import com.example.myChat.Model.User;
 import com.example.myChat.Service.JwtService;
 import com.example.myChat.Service.AuthService;
@@ -26,9 +26,9 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<MessageResponseDto> register(@RequestBody RegisterRequestDto registerRequest) {
+    public ResponseEntity<RegisterResponseDto> register(@RequestBody RegisterRequestDto registerRequest) {
         authService.registerUser(registerRequest);
-        MessageResponseDto messageResponseDto = mountMessageResponseDto("Registration successful. Please verify the registered email within 20 minutes to activate your account.", Instant.now());
+        RegisterResponseDto messageResponseDto = mountMessageResponseDto("Registration successful. Please verify the registered email within 20 minutes to activate your account.", Instant.now());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(messageResponseDto);
     }
@@ -43,9 +43,9 @@ public class AuthController {
     }
 
     @GetMapping("/verify")
-    public ResponseEntity<MessageResponseDto> verifyEmail(@RequestParam("token") String verificationToken) {
+    public ResponseEntity<RegisterResponseDto> verifyEmail(@RequestParam("token") String verificationToken) {
         authService.verifyUser(verificationToken);
-        MessageResponseDto messageResponseDto = mountMessageResponseDto("Account active successfully", Instant.now());
+        RegisterResponseDto messageResponseDto = mountMessageResponseDto("Account active successfully", Instant.now());
         return ResponseEntity.status(HttpStatus.OK).body(messageResponseDto);
     }
 
@@ -57,8 +57,8 @@ public class AuthController {
         return authResponseDto;
     }
 
-    private MessageResponseDto mountMessageResponseDto(String message, Instant timestamp) {
-        MessageResponseDto messageResponseDto = new MessageResponseDto();
+    private RegisterResponseDto mountMessageResponseDto(String message, Instant timestamp) {
+        RegisterResponseDto messageResponseDto = new RegisterResponseDto();
         messageResponseDto.setMessage(message);
         messageResponseDto.setTimestamp(timestamp);
         return messageResponseDto;
