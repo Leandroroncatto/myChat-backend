@@ -64,6 +64,7 @@ public class UserController {
         userResponseDto.setId(user.getId());
         userResponseDto.setBio(user.getBio());
         userResponseDto.setProfilePictureUrl(user.getProfilePictureUrl());
+        userResponseDto.setStatus(user.getStatus());
         userResponseDto.setEmail(user.getEmail());
         userResponseDto.setUsername(user.getUsername());
         userResponseDto.setDisplayName(user.getDisplayName());
