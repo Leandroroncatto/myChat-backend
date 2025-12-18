@@ -58,10 +58,16 @@ public class User implements UserDetails {
     private LocalDateTime createdAt;
 
     @Column
-    private String verificationToken;
+    private String emailVerificationToken;
 
     @Column
-    private Instant verificationExpiresIn;
+    private String forgotPasswordToken;
+
+    @Column
+    private Instant emailVerificationExpiresIn;
+
+    @Column
+    private Instant forgotPasswordTokenExpiresIn;
 
     @Column
     boolean enabled = false;
