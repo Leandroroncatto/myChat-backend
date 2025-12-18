@@ -58,6 +58,10 @@ public class AuthController {
         return ResponseEntity.ok().body(messageResponseDto);
     }
 
+
+
+    // helpers
+
     private LoginResponseDto mountLoginResponseDto(String token) {
         LoginResponseDto authResponseDto = new LoginResponseDto();
         authResponseDto.setToken(token);
