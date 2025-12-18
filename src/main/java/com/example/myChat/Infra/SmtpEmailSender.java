@@ -10,6 +10,8 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.security.SecureRandom;
+
 @Service
 public class SmtpEmailSender implements EmailSender {
 
@@ -33,6 +35,13 @@ public class SmtpEmailSender implements EmailSender {
         String path = "/api/v1/auth/forgot";
         String message = "Click the button below to reset your password";
         sendEmail(email, resetToken, subject, path, message);
+    }
+
+    public void sendTwoFactorAuthenticationEmail(String email, String twoFactorToken) {
+        String subject = "Enable 2FA";
+        String path = "";
+        String message = "Click the button below to enable two factor authentication";
+        sendEmail(email, twoFactorToken, subject, path, message);
     }
 
     private void sendEmail(String email, String token, String subject, String path, String message) {

@@ -4,4 +4,6 @@ public interface EmailSender {
     void sendVerificationEmail(String email, String token);
 
     void sendForgotPasswordEmail(String email, String token);
+
+    void sendTwoFactorAuthenticationEmail(String email, String token);
 }
