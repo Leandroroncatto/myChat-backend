@@ -3,6 +3,7 @@ package com.example.myChat.Service;
 import com.example.myChat.Dtos.request.LoginRequestDto;
 import com.example.myChat.Dtos.request.RegisterRequestDto;
 import com.example.myChat.Exception.BadRequest;
+import com.example.myChat.Exception.NotFound;
 import com.example.myChat.Exception.Unauthorized;
 import com.example.myChat.Model.User;
 import com.example.myChat.Repository.UserRepository;
@@ -65,7 +66,7 @@ public class AuthService {
 
         User user = buildUser(request);
         try {
-            user.setVerificationExpiresIn(Instant.now().plus(Duration.ofMinutes(20)));
+            user.setVerificationExpiresIn(generateTokenExpirationTime());
             userRepository.save(user);
             emailSender.sendVerificationEmail(user.getEmail(), user.getVerificationToken());
         } catch (DataIntegrityViolationException e) {
@@ -88,6 +89,22 @@ public class AuthService {
         userRepository.save(user);
     }
 
+    public void resendVerificationEmail(String email) {
+        System.out.println(email);
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new NotFound("User not found"));
+
+        if (user.isEnabled()) {
+            throw new BadRequest("Account already verified.");
+        }
+
+        String newToken = generateVerificationToken();
+        user.setVerificationToken(newToken);
+        user.setVerificationExpiresIn(generateTokenExpirationTime());
+        userRepository.save(user);
+
+        emailSender.sendVerificationEmail(user.getEmail(), user.getVerificationToken());
+    }
+
     private User buildUser(RegisterRequestDto request) {
         User user = new User();
         user.setUsername(request.getUsername());
@@ -101,6 +118,10 @@ public class AuthService {
 
     private String generateVerificationToken() {
         return UUID.randomUUID().toString();
+    }
+
+    private Instant generateTokenExpirationTime() {
+        return Instant.now().plus(Duration.ofMinutes(20));
     }
 }
 
