@@ -9,7 +9,7 @@ import java.time.Instant;
 @Getter
 @Setter
 @JsonPropertyOrder({"message", "timestamp"})
-public class RegisterResponseDto {
+public class MessageResponseDto {
     private String message;
     private Instant timestamp;
 }
