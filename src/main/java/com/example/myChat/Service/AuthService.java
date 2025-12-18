@@ -66,43 +66,65 @@ public class AuthService {
 
         User user = buildUser(request);
         try {
-            user.setVerificationExpiresIn(generateTokenExpirationTime());
+            user.setEmailVerificationExpiresIn(generateTokenExpirationTime());
             userRepository.save(user);
-            emailSender.sendVerificationEmail(user.getEmail(), user.getVerificationToken());
+            emailSender.sendVerificationEmail(user.getEmail(), user.getEmailVerificationToken());
         } catch (DataIntegrityViolationException e) {
             throw new BadRequest("Something went wrong!");
         }
     }
 
-    public void verifyUser(String token) {
-        User user = userRepository.findByVerificationToken(token)
+    public void verifyUser(String emailVerificationToken) {
+        User user = userRepository.findByEmailVerificationToken(emailVerificationToken)
                 .orElseThrow(() -> new BadRequest("Invalid or expired verification link."));
 
-        if (user.getVerificationExpiresIn().isBefore(Instant.now())) {
+        if (user.getEmailVerificationExpiresIn().isBefore(Instant.now())) {
             throw new BadRequest("Verification link expired");
         }
 
         user.setEnabled(true);
-        user.setVerificationToken(null);
-        user.setVerificationExpiresIn(null);
+        user.setEmailVerificationToken(null);
+        user.setEmailVerificationExpiresIn(null);
 
         userRepository.save(user);
     }
 
     public void resendVerificationEmail(String email) {
-        System.out.println(email);
         User user = userRepository.findByEmail(email).orElseThrow(() -> new NotFound("User not found"));
 
         if (user.isEnabled()) {
             throw new BadRequest("Account already verified.");
         }
 
-        String newToken = generateVerificationToken();
-        user.setVerificationToken(newToken);
-        user.setVerificationExpiresIn(generateTokenExpirationTime());
+        user.setEmailVerificationToken(generateVerificationToken());
+        user.setEmailVerificationExpiresIn(generateTokenExpirationTime());
         userRepository.save(user);
 
-        emailSender.sendVerificationEmail(user.getEmail(), user.getVerificationToken());
+        emailSender.sendVerificationEmail(user.getEmail(), user.getEmailVerificationToken());
+    }
+
+    public void forgotPasswordEmail(String email) {
+        Optional<User> optUser = userRepository.findByEmail(email);
+        if (optUser.isPresent()) {
+            User user = optUser.get();
+            user.setForgotPasswordToken(generateVerificationToken());
+            user.setForgotPasswordTokenExpiresIn(generateTokenExpirationTime());
+            userRepository.save(user);
+
+            emailSender.sendForgotPasswordEmail(user.getEmail(), user.getForgotPasswordToken());
+        }
+    }
+
+    public void resetPassword(String newPassword, String token) {
+        User user = userRepository.findByForgotPasswordToken(token).orElseThrow(() -> new BadRequest("Invalid or expired token."));
+
+        if (user.getForgotPasswordTokenExpiresIn().isBefore(Instant.now())) {
+            throw new BadRequest("This token has expired");
+        }
+        user.setPassword(passwordEncoder.encode(newPassword));
+        user.setForgotPasswordToken(null);
+        user.setForgotPasswordTokenExpiresIn(null);
+        userRepository.save(user);
     }
 
     private User buildUser(RegisterRequestDto request) {
@@ -112,7 +134,7 @@ public class AuthService {
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setEnabled(false);
-        user.setVerificationToken(generateVerificationToken());
+        user.setEmailVerificationToken(generateVerificationToken());
         return user;
     }
 
