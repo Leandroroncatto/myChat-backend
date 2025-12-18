@@ -20,7 +20,7 @@ public class DeleteExpiredUsersJob {
     @Scheduled(fixedRate = 2 * 60 * 1000)
     public void deleteExpiredUsers() {
         Instant now = Instant.now();
-        List<User> expiredUsers = userRepository.findAllByEnabledFalseAndVerificationExpiresInBefore(now);
+        List<User> expiredUsers = userRepository.findAllByEnabledFalseAndEmailVerificationExpiresInBefore(now);
 
         if (!expiredUsers.isEmpty()) {
             userRepository.deleteAll(expiredUsers);
