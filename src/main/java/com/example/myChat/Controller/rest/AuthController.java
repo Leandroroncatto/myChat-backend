@@ -1,8 +1,6 @@
 package com.example.myChat.Controller.rest;
 
-import com.example.myChat.Dtos.request.LoginRequestDto;
-import com.example.myChat.Dtos.request.RegisterRequestDto;
-import com.example.myChat.Dtos.request.ResendEmailVerificationDto;
+import com.example.myChat.Dtos.request.*;
 import com.example.myChat.Dtos.response.LoginResponseDto;
 import com.example.myChat.Dtos.response.MessageResponseDto;
 import com.example.myChat.Model.User;
@@ -44,9 +42,9 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.OK).body(authResponseDto);
     }
 
-    @GetMapping("/verify")
-    public ResponseEntity<MessageResponseDto> verifyEmail(@RequestParam("token") String verificationToken) {
-        authService.verifyUser(verificationToken);
+    @PostMapping("/verify-email")
+    public ResponseEntity<MessageResponseDto> verifyEmail(@RequestBody VerifyEmailDto verifyEmailDto) {
+        authService.verifyUser(verifyEmailDto.getToken());
         MessageResponseDto messageResponseDto = mountMessageResponseDto("Account active successfully", Instant.now());
         return ResponseEntity.status(HttpStatus.OK).body(messageResponseDto);
     }
@@ -58,6 +56,19 @@ public class AuthController {
         return ResponseEntity.ok().body(messageResponseDto);
     }
 
+    @PostMapping("/forgot-password")
+    public ResponseEntity<MessageResponseDto> forgotPassword(@RequestBody ForgotPasswordDto forgotPasswordDto) {
+        MessageResponseDto messageResponseDto = mountMessageResponseDto("forgot password email sent. Please check your inbox.", Instant.now());
+        authService.forgotPasswordEmail(forgotPasswordDto.getEmail());
+        return ResponseEntity.ok().body(messageResponseDto);
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<MessageResponseDto> resetPassword(@RequestBody ResetPasswordDto resetPasswordDto) {
+        authService.resetPassword(resetPasswordDto.getPassword(), resetPasswordDto.getToken());
+        MessageResponseDto messageResponseDto = mountMessageResponseDto("Password changed successfully.", Instant.now());
+        return ResponseEntity.ok().body(messageResponseDto);
+    }
 
 
     // helpers
