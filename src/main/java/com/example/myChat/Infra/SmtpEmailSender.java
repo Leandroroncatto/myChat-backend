@@ -10,6 +10,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.security.SecureRandom;
 
 @Service
@@ -25,14 +26,14 @@ public class SmtpEmailSender implements EmailSender {
 
     public void sendVerificationEmail(String email, String verificationToken) {
         String subject = "Email verification";
-        String path = "/api/v1/auth/verify";
+        String path = "/verify";
         String message = "Click the button below to verify your Email address";
         sendEmail(email, verificationToken, subject, path, message);
     }
 
     public void sendForgotPasswordEmail(String email, String resetToken) {
         String subject = "Password reset request";
-        String path = "/api/v1/auth/forgot";
+        String path = "/reset";
         String message = "Click the button below to reset your password";
         sendEmail(email, resetToken, subject, path, message);
     }
@@ -46,7 +47,8 @@ public class SmtpEmailSender implements EmailSender {
 
     private void sendEmail(String email, String token, String subject, String path, String message) {
         try {
-            String actionUrl = ServletUriComponentsBuilder.fromCurrentContextPath()
+            URI myChatUri = URI.create("https://mychat-1wyo.onrender.com");
+            String actionUrl = ServletUriComponentsBuilder.fromUri(myChatUri)
                     .path(path)
                     .queryParam("token", token).toUriString();
             String content = """
