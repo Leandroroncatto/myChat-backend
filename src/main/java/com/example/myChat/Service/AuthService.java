@@ -95,7 +95,6 @@ public class AuthService {
         if (user.isEnabled()) {
             throw new BadRequest("Account already verified.");
         }
-
         user.setEmailVerificationToken(generateVerificationToken());
         user.setEmailVerificationExpiresIn(generateTokenExpirationTime());
         userRepository.save(user);
@@ -117,10 +116,16 @@ public class AuthService {
 
     public void resetPassword(String newPassword, String token) {
         User user = userRepository.findByForgotPasswordToken(token).orElseThrow(() -> new BadRequest("Invalid or expired token."));
+        Map<String, String> errors = userFormHelper.validatePassword(newPassword);
 
         if (user.getForgotPasswordTokenExpiresIn().isBefore(Instant.now())) {
             throw new BadRequest("This token has expired");
         }
+
+        if (!errors.isEmpty()) {
+            throw new BadRequest("Invalid fields", errors);
+        }
+
         user.setPassword(passwordEncoder.encode(newPassword));
         user.setForgotPasswordToken(null);
         user.setForgotPasswordTokenExpiresIn(null);
