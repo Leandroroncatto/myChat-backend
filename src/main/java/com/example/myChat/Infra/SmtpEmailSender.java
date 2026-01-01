@@ -51,43 +51,7 @@ public class SmtpEmailSender implements EmailSender {
             String actionUrl = ServletUriComponentsBuilder.fromUri(myChatUri)
                     .path(path)
                     .queryParam("token", token).toUriString();
-            String content = """
-                    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border-radius: 8px; background-color: #f9f9f9; text-align: center;">
-                      <h2 style="color: #333;">%s</h2>
-                    
-                      <p style="font-size: 16px; color: #555;">
-                        %s.
-                      </p>
-                    
-                      <a href="%s"
-                         style="
-                           display: inline-block;
-                           margin: 20px 0;
-                           padding: 12px 24px;
-                           font-size: 16px;
-                           color: #ffffff;
-                           background-color: #3B82F6;
-                           text-decoration: none;
-                           border-radius: 6px;
-                           font-weight: bold;
-                         ">
-                        Verify Email
-                      </a>
-                    
-                      <p style="font-size: 14px; color: #777;">
-                        If the button doesn't work, copy and paste this link into your browser:
-                      </p>
-                    
-                      <p style="font-size: 14px; color: #007bff; word-break: break-all;">
-                        %s
-                      </p>
-                    
-                      <p style="font-size: 12px; color: #aaa;">
-                        This is an automated message. Please do not reply to this email.
-                      </p>
-                    </div>
-                    """.formatted(subject, message, actionUrl, actionUrl);
-
+            String content = emailModel(subject, message, actionUrl);
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
             helper.setTo(email);
@@ -99,4 +63,44 @@ public class SmtpEmailSender implements EmailSender {
             throw new RuntimeException(e);
         }
     }
+
+    private String emailModel(String subject, String message, String actionUrl) {
+        return """
+                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border-radius: 8px; background-color: #f9f9f9; text-align: center;">
+                  <h2 style="color: #333;">%s</h2>
+                
+                  <p style="font-size: 16px; color: #555;">
+                    %s.
+                  </p>
+                
+                  <a href="%s"
+                     style="
+                       display: inline-block;
+                       margin: 20px 0;
+                       padding: 12px 24px;
+                       font-size: 16px;
+                       color: #ffffff;
+                       background-color: #3B82F6;
+                       text-decoration: none;
+                       border-radius: 6px;
+                       font-weight: bold;
+                     ">
+                    Verify Email
+                  </a>
+                
+                  <p style="font-size: 14px; color: #777;">
+                    If the button doesn't work, copy and paste this link into your browser:
+                  </p>
+                
+                  <p style="font-size: 14px; color: #007bff; word-break: break-all;">
+                    %s
+                  </p>
+                
+                  <p style="font-size: 12px; color: #aaa;">
+                    This is an automated message. Please do not reply to this email.
+                  </p>
+                </div>
+                """.formatted(subject, message, actionUrl, actionUrl);
+    }
 }
+
