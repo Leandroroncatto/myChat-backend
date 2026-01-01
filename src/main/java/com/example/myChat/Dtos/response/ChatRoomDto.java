@@ -11,7 +11,7 @@ import java.util.List;
 public class ChatRoomDto {
     private String roomId;
     private List<MessageDto> messages;
-    private List<UserSummaryDTO> participants;
+    private List<UserSummaryDto> participants;
     private String status;
     private LocalDateTime createdAt;
 }
