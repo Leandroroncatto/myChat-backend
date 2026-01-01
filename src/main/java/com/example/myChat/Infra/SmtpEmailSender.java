@@ -103,7 +103,7 @@ public class SmtpEmailSender implements EmailSender {
                     This is an automated message. Please do not reply to this email.
                   </p>
                 </div>
-                """.formatted(subject, message, actionUrl, actionUrl);
+                """.formatted(subject, message, actionUrl, btnAction, actionUrl);
     }
 }
 
