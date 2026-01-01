@@ -26,32 +26,35 @@ public class SmtpEmailSender implements EmailSender {
 
     public void sendVerificationEmail(String email, String verificationToken) {
         String subject = "Email verification";
+        String btnAction = "Verify email";
         String path = "/verify";
         String message = "Click the button below to verify your Email address";
-        sendEmail(email, verificationToken, subject, path, message);
+        sendEmail(email, verificationToken, subject, btnAction, path, message);
     }
 
     public void sendForgotPasswordEmail(String email, String resetToken) {
         String subject = "Password reset request";
         String path = "/reset";
+        String btnAction = "Reset password";
         String message = "Click the button below to reset your password";
-        sendEmail(email, resetToken, subject, path, message);
+        sendEmail(email, resetToken, subject, btnAction, path, message);
     }
 
     public void sendTwoFactorAuthenticationEmail(String email, String twoFactorToken) {
         String subject = "Enable 2FA";
+        String btnAction = "Enable";
         String path = "";
         String message = "Click the button below to enable two factor authentication";
-        sendEmail(email, twoFactorToken, subject, path, message);
+        sendEmail(email, twoFactorToken, subject, btnAction, path, message);
     }
 
-    private void sendEmail(String email, String token, String subject, String path, String message) {
+    private void sendEmail(String email, String token, String subject, String btnAction, String path, String message) {
         try {
             URI myChatUri = URI.create("https://mychat-1wyo.onrender.com");
             String actionUrl = ServletUriComponentsBuilder.fromUri(myChatUri)
                     .path(path)
                     .queryParam("token", token).toUriString();
-            String content = emailModel(subject, message, actionUrl);
+            String content = emailModel(subject, btnAction, message, actionUrl);
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
             helper.setTo(email);
@@ -64,7 +67,7 @@ public class SmtpEmailSender implements EmailSender {
         }
     }
 
-    private String emailModel(String subject, String message, String actionUrl) {
+    private String emailModel(String subject, String btnAction, String message, String actionUrl) {
         return """
                 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border-radius: 8px; background-color: #f9f9f9; text-align: center;">
                   <h2 style="color: #333;">%s</h2>
@@ -85,7 +88,7 @@ public class SmtpEmailSender implements EmailSender {
                        border-radius: 6px;
                        font-weight: bold;
                      ">
-                    Verify Email
+                    %s.
                   </a>
                 
                   <p style="font-size: 14px; color: #777;">
