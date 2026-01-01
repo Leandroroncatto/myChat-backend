@@ -41,7 +41,7 @@ public class UserFormHelper {
         return errors;
     }
 
-    private Map<String, String> validateBaseFields(String username, String email, String password, String displayName) {
+    public Map<String, String> validateBaseFields(String username, String email, String password, String displayName) {
         Map<String, String> errors = new HashMap<>();
         if (username == null || username.isBlank()) errors.put("username", "Username is required");
         if (email == null || email.isBlank()) errors.put("email", "Email is required");
@@ -50,7 +50,7 @@ public class UserFormHelper {
         return errors;
     }
 
-    private Map<String, String> validateUsername(String username, Optional<UUID> id) {
+    public Map<String, String> validateUsername(String username, Optional<UUID> id) {
         Map<String, String> errors = new HashMap<>();
         Optional<User> userByUsername = userRepository.findByUsername(username);
 
@@ -71,7 +71,7 @@ public class UserFormHelper {
         return errors;
     }
 
-    private Map<String, String> validateEmail(String email, Optional<UUID> id) {
+    public Map<String, String> validateEmail(String email, Optional<UUID> id) {
         Map<String, String> errors = new HashMap<>();
         String emailRegex = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
         Optional<User> userByEmail = userRepository.findByEmail(email);
@@ -92,7 +92,7 @@ public class UserFormHelper {
     }
 
 
-    private Map<String, String> validatePassword(String password) {
+    public Map<String, String> validatePassword(String password) {
         Map<String, String> errors = new HashMap<>();
 
         if (password.length() < 6) {
